@@ -79,6 +79,15 @@ wss.on('connection', (ws) => {
                 return;
             }
 
+            // TEST ÜÇÜN: Oyunu bitirib yenidən lobiə qayıtmaq (RESET_LOBBY)
+            if (data.type === "RESET_LOBBY") {
+                gameStarted = false;
+                connectedPlayers = []; // İstəsən oyunçu siyahısını da sıfırlayırıq
+                console.log("Oyun sıfırlandı! Yeni qoşulmalar və QR kod yenidən aktivləşdi.");
+                broadcastLobbyState();
+                return;
+            }
+
             // Əgər Unity-dən Dash və ya Action təsdiqi gələrsə, YALNIZ həmin clientId-yə sahib pulta göndəririk!
             if (data.type === "DASH_STARTED" || data.type === "ACTION_STARTED") {
                 const targetClientId = data.clientId;
