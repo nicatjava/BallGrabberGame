@@ -73,20 +73,22 @@ wss.on('connection', (ws) => {
                 return;
             }
 
-            if (data.type === "START_GAME") {
-                gameStarted = true;
-                console.log("Oyun başladı! Yeni qoşulmalar bloklandı.");
-                return;
-            }
+            // Oyun başladıqda yeni qoşulmalar bloklanır
+if (data.type === "START_GAME" && !ws.isController) {
+    gameStarted = true;
+    console.log("Oyun başladı! Yeni qoşulmalar bloklandı.");
+    return;
+}
 
-            // SPACE kliklənəndə (və ya reset tələb olunanda) lobbini sıfırlayırıq
-            if (data.type === "RESET_LOBBY") {
-                gameStarted = false;
-                connectedPlayers = [];
-                console.log("Lobi sıfırlandı! Yenidən qoşulmalara icazə verildi.");
-                broadcastLobbyState();
-                return;
-            }
+// Unity SPACE basdıqda lobbi yenidən aktivləşir
+if (data.type === "RESET_LOBBY" && !ws.isController) {
+    gameStarted = false;
+
+    console.log("Lobbi sıfırlandı! Yeni oyunçular qoşula bilər.");
+
+    broadcastLobbyState();
+    return;
+}
 
             // Əgər Unity-dən Dash və ya Action təsdiqi gələrsə, YALNIZ həmin clientId-yə sahib pulta göndəririk!
             if (data.type === "DASH_STARTED" || data.type === "ACTION_STARTED") {
