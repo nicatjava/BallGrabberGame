@@ -48,7 +48,9 @@
     showController();
   }
 
-  startBtn.addEventListener('click', enterController);
+  if (startBtn) {
+    startBtn.addEventListener('click', enterController);
+  }
 
   document.addEventListener('fullscreenchange', () => {
     if (document.fullscreenElement) {
@@ -91,22 +93,18 @@
       ws.send(JSON.stringify(joinMessage));
     };
     
-    // qalan hissələr eyni qalır...
-    
-   ws.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      
-      // Server mesajı onsuz da birbaşa bu pulta göndərdiyi üçün birbaşa yoxlayırıq:
-      if (data.type === "DASH_STARTED") {
-        const btnB = document.getElementById('btnB');
-        if (btnB) startCooldown(btnB, 7000); 
-      } else if (data.type === "ACTION_STARTED") {
-        const btnX = document.getElementById('btnX');
-        if (btnX) startCooldown(btnX, 2000); 
-      }
-    } catch (e) {}
-  };
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "DASH_STARTED") {
+          const btnB = document.getElementById('btnB');
+          if (btnB) startCooldown(btnB, 7000); 
+        } else if (data.type === "ACTION_STARTED") {
+          const btnX = document.getElementById('btnX');
+          if (btnX) startCooldown(btnX, 2000); 
+        }
+      } catch (e) {}
+    };
 
     ws.onclose = () => { setTimeout(connectWebSocket, 2000); };
     ws.onerror = (error) => {};
@@ -119,9 +117,8 @@
     }
   }
 
-  // Joystick məlumatlarını maksimum 50 dəfə/saniyə göndəririk
-setInterval(() => {
-    // Əgər joystick hərəkət edibsə VƏ YA hər hansı bir düymə basılıbsa göndər
+  // İnterval 35ms olaraq tənzimləndi (Şəbəkə yükünü azaldır, laqı aradan qaldırır)
+  setInterval(() => {
     const isMoving = window.controllerState.x !== 0 || window.controllerState.y !== 0;
     const isButtonPressed = Object.values(window.controllerState.buttons).some(b => b);
 
@@ -133,44 +130,46 @@ setInterval(() => {
         sendStateToServer();
         joystickDirty = false;
     }
-}, 20);
+  }, 35);
 
-  function updateStick(event) {
-    const rect = area.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    radius = rect.width * 0.29;
-    let dx = event.clientX - cx;
-    let dy = event.clientY - cy;
-    const distance = Math.hypot(dx, dy);
-    if (distance > radius) {
-      dx = (dx / distance) * radius;
-      dy = (dy / distance) * radius;
+  if (area && knob) {
+    function updateStick(event) {
+      const rect = area.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      radius = rect.width * 0.29;
+      let dx = event.clientX - cx;
+      let dy = event.clientY - cy;
+      const distance = Math.hypot(dx, dy);
+      if (distance > radius) {
+        dx = (dx / distance) * radius;
+        dy = (dy / distance) * radius;
+      }
+      knob.style.transform = `translate(${dx}px, ${dy}px)`;
+      const x = Math.max(-1, Math.min(1, dx / radius));
+      const y = Math.max(-1, Math.min(1, -dy / radius));
+      
+      window.controllerState.x = Number(x.toFixed(3));
+      window.controllerState.y = Number(y.toFixed(3));
+
+      joystickDirty = true;
     }
-    knob.style.transform = `translate(${dx}px, ${dy}px)`;
-    const x = Math.max(-1, Math.min(1, dx / radius));
-    const y = Math.max(-1, Math.min(1, -dy / radius));
-    
-    window.controllerState.x = Number(x.toFixed(3));
-    window.controllerState.y = Number(y.toFixed(3));
 
-    joystickDirty = true;
+    function resetStick() {
+      activePointer = null;
+      knob.style.transform = 'translate(0px, 0px)';
+      window.controllerState.x = 0;
+      window.controllerState.y = 0;
+      sendStateToServer();
+      joystickDirty = false;
+    }
+
+    area.addEventListener('pointerdown', e => { e.preventDefault(); activePointer = e.pointerId; area.setPointerCapture(e.pointerId); updateStick(e); });
+    area.addEventListener('pointermove', e => { if (e.pointerId === activePointer) { e.preventDefault(); updateStick(e); } });
+    area.addEventListener('pointerup', e => { if (e.pointerId === activePointer) resetStick(); });
+    area.addEventListener('pointercancel', resetStick);
+    area.addEventListener('lostpointercapture', resetStick);
   }
-
-  function resetStick() {
-    activePointer = null;
-    knob.style.transform = 'translate(0px, 0px)';
-    window.controllerState.x = 0;
-    window.controllerState.y = 0;
-    sendStateToServer();
-    joystickDirty = false;
-  }
-
-  area.addEventListener('pointerdown', e => { e.preventDefault(); activePointer = e.pointerId; area.setPointerCapture(e.pointerId); updateStick(e); });
-  area.addEventListener('pointermove', e => { if (e.pointerId === activePointer) { e.preventDefault(); updateStick(e); } });
-  area.addEventListener('pointerup', e => { if (e.pointerId === activePointer) resetStick(); });
-  area.addEventListener('pointercancel', resetStick);
-  area.addEventListener('lostpointercapture', resetStick);
 
   const buttons = document.querySelectorAll('.game-btn');
   buttons.forEach(button => {
