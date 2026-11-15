@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#08060d">
+<title>BALL GRABBER — Join</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="start-screen">
+  <div class="join-container">
+    <h2>OYUNÇU ADI</h2>
+    <input type="text" id="nicknameInput" class="join-input" placeholder="Məs: NICAT" maxlength="16" autocomplete="off" spellcheck="false">
+    <button class="join-btn" id="joinBtn">OYUNA QOŞUL</button>
+  </div>
+</div>
+
+<script>
+  const joinBtn = document.getElementById('joinBtn');
+  const nicknameInput = document.getElementById('nicknameInput');
+
+  joinBtn.addEventListener('click', () => {
+    let nickname = nicknameInput.value.trim().toUpperCase() || "PLAYER";
+    // Nik adını URL vasitəsilə controller səhifəsinə ötürürük
+    window.location.href = `controller.html?nick=${encodeURIComponent(nickname)}`;
+  });
+
+  nicknameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      joinBtn.click();
+    }
+  });
+</script>
+
+</body>
+</html>

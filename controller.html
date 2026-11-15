@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#08060d">
+<title>BALL GRABBER — Controller</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="start-screen" id="startScreen">
+  <button class="start-btn" id="startBtn">FULL SCREEN</button>
+</div>
+
+<main class="controller" aria-label="Ball Grabber Controller">
+
+  <div class="nameplate">
+    <span id="nicknameDisplay">PLAYER</span>
+  </div>
+
+  <div class="stick-area" id="stickArea" aria-label="Analog joystick">
+    <div class="stick-knob" id="stickKnob"></div>
+  </div>
+
+  <div class="buttons">
+    <button class="game-btn btn-y" data-button="Y" id="btnY">
+      <span class="btn-text">THROW</span>
+    </button>
+    
+    <button class="game-btn btn-b" data-button="B" id="btnB">
+      <span class="btn-text">DASH</span>
+      <div class="cooldown-overlay" id="cdB"></div>
+    </button>
+
+    <button class="game-btn btn-x" data-button="X" id="btnX">
+      <span class="btn-text">ACTION</span>
+      <div class="cooldown-overlay" id="cdX"></div>
+    </button>
+
+    <button class="game-btn btn-a" data-button="A" id="btnA">
+      <span class="btn-text">JUMP</span>
+    </button>
+  </div>
+  <div class="hint">BALL GRABBER · ARENA CONTROLLER</div>
+</main>
+
+<script src="js/controller.js"></script>
+</body>
+</html>

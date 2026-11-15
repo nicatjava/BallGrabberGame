@@ -1,0 +1,176 @@
+* { box-sizing: border-box; }
+html, body { width:100%; height:100%; margin:0; overflow:hidden; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color:#fff;
+  background:
+    radial-gradient(ellipse at 50% 48%, rgba(47,16,64,.16) 0%, rgba(8,6,13,0) 48%),
+    radial-gradient(ellipse at 50% 50%, #100b18 0%, #08060d 68%, #050409 100%);
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+/* Giriş ekranı (index.html və ya full-screen start) */
+.start-screen {
+  position:fixed; inset:0; z-index:1000;
+  display:grid; place-items:center;
+  background:#000;
+}
+.start-btn, .join-btn {
+  min-width:190px; padding:18px 34px;
+  border:2px solid #9cff64; border-radius:12px;
+  background:#111; color:#9cff64;
+  font-size:18px; font-weight:900; letter-spacing:2px;
+  cursor:pointer;
+  box-shadow:0 0 24px rgba(156,255,100,.18);
+  -webkit-tap-highlight-color:transparent;
+}
+.start-btn:active, .join-btn:active { transform:scale(.97); }
+
+/* Nickname Form Stili (index.html üçün) */
+.join-container {
+  display:flex; flex-direction:column; align-items:center; gap:20px;
+  padding:30px; background:rgba(20,12,25,0.9);
+  border:2px solid rgba(106,57,125,0.6); border-radius:20px;
+  box-shadow:0 0 40px rgba(100,35,130,0.3);
+}
+.join-input {
+  width:260px; padding:15px; text-align:center;
+  background:#08060d; border:2px solid #9cff64; border-radius:10px;
+  color:#9cff64; font-size:20px; font-weight:900; text-transform:uppercase;
+  outline:none;
+}
+.join-input::placeholder { color:rgba(156,255,100,0.5); }
+
+/* Controller */
+.controller {
+  display:none;
+  position:relative; width:100%; height:100%; min-height:300px;
+  overflow:hidden; isolation:isolate;
+}
+body.controller-active .controller { display:block; }
+body.controller-active .start-screen { display:none; }
+.controller::before, .controller::after {
+  content:""; position:absolute; z-index:-1; pointer-events:none;
+  left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(96vw, 155vh); aspect-ratio:1.9/1; border-radius:50%;
+  border:2px solid rgba(135,47,180,.23);
+  box-shadow:0 0 13px rgba(147,44,205,.18), inset 0 0 18px rgba(147,44,205,.06);
+}
+.controller::after {
+  width:min(91vw, 146vh); border-color:rgba(161,55,202,.18);
+  box-shadow:0 0 22px rgba(147,44,205,.13);
+}
+
+/* Nameplate */
+.nameplate {
+  position:absolute; top:6%; left:50%; transform:translateX(-50%);
+  width: clamp(220px, 32vw, 380px);
+  height: clamp(45px, 11vh, 75px);
+  display:flex; align-items:center; justify-content:center;
+  border-radius:100px;
+  background:linear-gradient(145deg, rgba(28,16,33,.97), rgba(20,12,25,.97));
+  border:3px solid rgba(106,57,125,.45);
+  box-shadow:0 0 0 1px rgba(20,8,27,.8), 0 0 28px rgba(100,35,130,.12), inset 0 0 22px rgba(132,63,157,.07);
+  color:#9cff64; font-size: clamp(18px, 2.8vw, 36px);
+  font-weight:900; letter-spacing:1px; text-transform:uppercase;
+  text-shadow:0 0 10px rgba(155,255,100,.35);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  padding:0 20px;
+}
+
+/* Joystick */
+.stick-area {
+  position:absolute; left:6%; bottom:8%;
+  width: clamp(140px, 26vw, 280px);
+  aspect-ratio:1; border-radius:50%;
+  border:2px solid rgba(112,70,143,.24);
+  background:radial-gradient(circle, rgba(32,17,43,.08), rgba(12,8,18,.12) 70%);
+  box-shadow:0 0 18px rgba(111,47,150,.06), inset 0 0 22px rgba(132,75,160,.04);
+  display:grid; place-items:center;
+}
+.stick-knob {
+  width:42%; aspect-ratio:1; border-radius:50%;
+  background:linear-gradient(145deg,#e5ddff 0%,#cfc2ff 55%,#b9a9f4 100%);
+  border:5px solid rgba(245,239,255,.9);
+  box-shadow:0 0 0 2px rgba(119,88,165,.65), 0 7px 20px rgba(0,0,0,.5), inset 0 2px 5px rgba(255,255,255,.85);
+  transform:translate(0,0); will-change:transform;
+  pointer-events:none;
+}
+
+/* Buttons Group */
+.buttons {
+  position: absolute;
+  right: clamp(12px, 5vw, 55px);
+  bottom: clamp(18px, 7vh, 65px);
+  width: clamp(180px, 34vw, 320px);
+  aspect-ratio: 1;
+}
+
+.game-btn {
+  position: absolute; display:grid; place-items:center;
+  border:0; border-radius:50%; color:#24112f;
+  font-weight:900; 
+  font-size: clamp(10px, 1.8vw, 15px);
+  padding: 6px;
+  text-align: center;
+  box-shadow:0 6px 0 rgba(28,13,37,.7), 0 10px 18px rgba(0,0,0,.42), inset 0 3px 6px rgba(255,255,255,.48), inset 0 -4px 8px rgba(42,10,70,.15);
+  transition:transform .07s ease, filter .07s ease, box-shadow .07s ease;
+  touch-action:none; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  overflow: hidden;
+}
+
+.btn-text {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.game-btn:active:not(.cooldown), .game-btn.pressed {
+  transform:translateY(4px) scale(.96);
+  box-shadow:0 2px 0 rgba(28,13,37,.7), 0 4px 10px rgba(0,0,0,.4), inset 0 3px 5px rgba(255,255,255,.35);
+  filter:brightness(1.12);
+}
+
+.game-btn.cooldown {
+  filter: grayscale(0.8) brightness(0.6);
+  cursor: not-allowed;
+}
+.cooldown-overlay {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(rgba(0,0,0,0.7) var(--progress, 360deg), transparent 0deg);
+  pointer-events: none;
+  display: none;
+  z-index: 5;
+}
+.game-btn.cooldown .cooldown-overlay { display: block; }
+
+.btn-a {
+  width: 42%; aspect-ratio: 1; right: 0; bottom: 0;
+  background: linear-gradient(145deg,#9df5ee,#4cc9c8 65%,#36aeb8);
+  z-index: 2;
+}
+.btn-b {
+  width: 36%; aspect-ratio: 1; right: 14%; top: 0;
+  background: linear-gradient(145deg,#ff8d9b,#e7445d 65%,#b91e47);
+  z-index: 3;
+}
+.btn-y {
+  width: 36%; aspect-ratio: 1; left: 0; top: 15%;
+  background: linear-gradient(145deg,#fff18a,#f2b944 70%,#dc8b27);
+  z-index: 2;
+}
+.btn-x {
+  width: 36%; aspect-ratio: 1; left: 0; bottom: 5%;
+  background: linear-gradient(145deg,#c78cff,#8439e8 70%,#5b20bb);
+  z-index: 1;
+}
+
+.hint {
+  position:absolute; left:50%; bottom:2%; transform:translateX(-50%);
+  color:rgba(207,190,225,.35); font-size:10px; letter-spacing:2px;
+  text-transform:uppercase; white-space:nowrap;
+}
