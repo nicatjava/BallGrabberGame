@@ -79,11 +79,11 @@ wss.on('connection', (ws) => {
                 return;
             }
 
-            // TEST ÜÇÜN: Oyunu bitirib yenidən lobiə qayıtmaq (RESET_LOBBY)
+            // SPACE kliklənəndə (və ya reset tələb olunanda) lobbini sıfırlayırıq
             if (data.type === "RESET_LOBBY") {
                 gameStarted = false;
-                connectedPlayers = []; // İstəsən oyunçu siyahısını da sıfırlayırıq
-                console.log("Oyun sıfırlandı! Yeni qoşulmalar və QR kod yenidən aktivləşdi.");
+                connectedPlayers = [];
+                console.log("Lobi sıfırlandı! Yenidən qoşulmalara icazə verildi.");
                 broadcastLobbyState();
                 return;
             }
