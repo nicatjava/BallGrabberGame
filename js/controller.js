@@ -2,7 +2,6 @@
   const startBtn = document.getElementById('startBtn');
   let joystickDirty = false;
 
-  // URL-dən nickname oxunması
   const urlParams = new URLSearchParams(window.location.search);
   const playerNickname = urlParams.get('nick') ? decodeURIComponent(urlParams.get('nick')) : "PLAYER";
   
@@ -117,7 +116,6 @@
     }
   }
 
-  // İnterval 35ms olaraq tənzimləndi (Şəbəkə yükünü azaldır, laqı aradan qaldırır)
   setInterval(() => {
     const isMoving = window.controllerState.x !== 0 || window.controllerState.y !== 0;
     const isButtonPressed = Object.values(window.controllerState.buttons).some(b => b);
@@ -130,7 +128,7 @@
         sendStateToServer();
         joystickDirty = false;
     }
-  }, 35);
+  }, 20);
 
   if (area && knob) {
     function updateStick(event) {
